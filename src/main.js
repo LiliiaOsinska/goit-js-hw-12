@@ -60,6 +60,7 @@ async function getPhoto(event) {
 
 async function onLoadMore() {
   page += 1;
+  loadMoreBtn.disabled = true;
   loader.classList.remove('hidden');
   try {
     const data = await pixabayCreate(query, page);
@@ -70,7 +71,17 @@ async function onLoadMore() {
         position: 'topRight',
         message: "We're sorry, but you've reached the end of search results.",
       });
+    } else {
+      loadMoreBtn.classList.remove('hidden');
     }
+    const { height: cardHeight } = document
+      .querySelector('.gallery-item')
+      .getBoundingClientRect();
+    window.scrollBy({
+      left: 0,
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   } catch (error) {
     iziToast.error({
       backgroundColor: 'red',
@@ -78,6 +89,7 @@ async function onLoadMore() {
       message: error.message,
     });
   } finally {
+    loadMoreBtn.disabled = false;
     loader.classList.add('hidden');
   }
 }
